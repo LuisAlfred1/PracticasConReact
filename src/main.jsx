@@ -1,10 +1,10 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import { Login } from "./components/intermediate/Login";
+import { UserCrud } from "./components/intermediate/UserCrud";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Login />
+    <UserCrud />
   </StrictMode>
 );
