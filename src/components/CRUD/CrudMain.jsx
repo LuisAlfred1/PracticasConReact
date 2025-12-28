@@ -7,14 +7,14 @@ export const CrudMain = () => {
   const [users, setUsers] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [errors, setErrors] = useState("");
+  const [errors, setErrors] = useState(null);
   const [success, setSuccess] = useState(false);
   const [editUserId, setEditUserId] = useState(null);
 
   //Manejo del submit del formulario
   const handleSubmit = (e) => {
     e.preventDefault();
-    setErrors("");
+    setErrors(null);
     if (!name || !email) {
       setErrors("All fields are required.");
       return;
@@ -57,7 +57,7 @@ export const CrudMain = () => {
     if (success || errors) {
       const timer = setTimeout(() => {
         setSuccess(false);
-        setErrors("");
+        setErrors(null);
       }, 3000);
       return () => clearTimeout(timer);
     }

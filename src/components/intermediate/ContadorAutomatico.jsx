@@ -4,6 +4,7 @@ export const ContadorAutomatico = () => {
   const [contador, setContador] = useState(0);
   const [activo, setActivo] = useState(true);
 
+  //El useEffect se encarga de ejecutar el código cada vez que el valor de "activo" cambie.
   useEffect(() => {
     if (!activo) return;
 
