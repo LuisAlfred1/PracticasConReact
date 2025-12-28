@@ -4,7 +4,11 @@ import { UserList } from "./UserList";
 
 //Componente principal de CRUD que maneja el estado y la lógica de la aplicación, incluye el formulario y la lista de usuarios, aqui es donde se maneja la logica de agregar, editar y eliminar usuarios
 export const CrudMain = () => {
-  const [users, setUsers] = useState([]);
+  //El estado de users se inicializa con los datos del localStorage si existen, de lo contrario con un array vacío
+  const [users, setUsers] = useState(() => {
+    const storedUsers = localStorage.getItem("users");
+    return storedUsers ? JSON.parse(storedUsers) : [];
+  });
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState(null);
@@ -28,12 +32,12 @@ export const CrudMain = () => {
         )
       );
       setEditUserId(null);
-      setSuccess(true);
+      setSuccess("User updated successfully!");
 
       //⬇️ Si no existe editUserId, estamos agregando un nuevo usuario
     } else {
       setUsers((prev) => [...prev, { id: Date.now(), name, email }]);
-      setSuccess(true);
+      setSuccess("User added successfully!");
     }
 
     setName("");
@@ -51,6 +55,11 @@ export const CrudMain = () => {
   const handleDelete = (id) => {
     setUsers((prev) => prev.filter((u) => u.id !== id));
   };
+
+  //Aqui utilizamos useEffect para guardar los usuarios en el localStorage cada vez que la lista de usuarios cambie.
+  useEffect(() => {
+    localStorage.setItem("users", JSON.stringify(users));
+  }, [users]);
 
   //Aqui utilizamos useEffect para limpiar los mensajes de exito y error despues de 3 segundos, por qué useEffect? Porque queremos que este efecto secundario ocurra en respuesta a cambios en los estados de success y errors.
   useEffect(() => {
@@ -83,7 +92,7 @@ export const CrudMain = () => {
       )}
       {success && (
         <section className="fixed top-4 right-4 p-3 text-sm text-green-400 bg-green-950 rounded-xl shadow-lg">
-          Action completed successfully! ✅
+          {success}
         </section>
       )}
       {/*Lado derecho */}
