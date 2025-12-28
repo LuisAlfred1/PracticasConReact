@@ -1,3 +1,4 @@
+
 //Componente de lista de usuarios, recibe props para manejar la edición y eliminación de usuarios
 export const UserList = ({ users, onEdit, onDelete }) => {
   if (users.length === 0) {
@@ -30,8 +31,9 @@ export const UserList = ({ users, onEdit, onDelete }) => {
               >
                 <i className="bi bi-pencil-square text-lg"></i>
               </button>
+              {/* el OnDelete ya no recibe el id del usuario, porque el modal ya tiene acceso al usuario a eliminar */}
               <button
-                onClick={() => onDelete(user.id)}
+                onClick={() => onDelete(user)}
                 className="text-red-400 hover:text-red-500 cursor-pointer"
               >
                 <i className="bi bi-trash text-lg"></i>

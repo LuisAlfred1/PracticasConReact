@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { UserForm } from "./UserForm";
 import { UserList } from "./UserList";
-
+import { Modal } from "../ui/Modal";
 //Componente principal de CRUD que maneja el estado y la lógica de la aplicación, incluye el formulario y la lista de usuarios, aqui es donde se maneja la logica de agregar, editar y eliminar usuarios
 export const CrudMain = () => {
   //El estado de users se inicializa con los datos del localStorage si existen, de lo contrario con un array vacío
@@ -14,6 +14,10 @@ export const CrudMain = () => {
   const [errors, setErrors] = useState(null);
   const [success, setSuccess] = useState(false);
   const [editUserId, setEditUserId] = useState(null);
+  //Estado para manejar la visibilidad del modal.
+  const [showModal, setShowModal] = useState(false);
+  //Estado para almacenar el usuario que se desea eliminar.
+  const [userToDelete, setUserToDelete] = useState(null);
 
   //Manejo del submit del formulario
   const handleSubmit = (e) => {
@@ -42,6 +46,12 @@ export const CrudMain = () => {
 
     setName("");
     setEmail("");
+  };
+
+  //Aqui manejamos la apertura del modal de confirmación de eliminación, llenando el estado con el usuario a eliminar
+  const OpenDeleteModal = (user) => {
+    setUserToDelete(user);
+    setShowModal(true);
   };
 
   //Manejo de la edición de un usuario, llenamos el formulario con los datos del usuario seleccionado
@@ -100,8 +110,43 @@ export const CrudMain = () => {
         <h1 className="text-2xl mb-4 font-medium">
           <i className="bi bi-people-fill"></i> User CRUD
         </h1>
-        <p className="text-sm text-gray-400">Proxima función: busqueda de usuarios.</p>
-        <UserList users={users} onEdit={handleEdit} onDelete={handleDelete} />
+        <p className="text-sm text-gray-400">
+          Proxima función: busqueda de usuarios.
+        </p>
+        <UserList
+          users={users}
+          onEdit={handleEdit}
+          onDelete={OpenDeleteModal}
+        />
+        <Modal
+          isOpen={showModal}
+          title="Confirm deletion"
+          onClose={() => setShowModal(false)}
+        >
+          <p>
+            Are you sure you want to delete{" "}
+            <strong>{userToDelete?.name}</strong>?
+          </p>
+
+          <div className="flex justify-end gap-3 mt-6">
+            <button
+              onClick={() => setShowModal(false)}
+              className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-700 transition cursor-pointer"
+            >
+              Cancel
+            </button>
+
+            <button
+              onClick={() => {
+                handleDelete(userToDelete.id);
+                setShowModal(false);
+              }}
+              className="px-4 py-2 bg-red-600 rounded hover:bg-red-700 transition cursor-pointer"
+            >
+              Delete
+            </button>
+          </div>
+        </Modal>
       </main>
     </div>
   );
