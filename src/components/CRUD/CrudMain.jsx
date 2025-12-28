@@ -100,6 +100,7 @@ export const CrudMain = () => {
         <h1 className="text-2xl mb-4 font-medium">
           <i className="bi bi-people-fill"></i> User CRUD
         </h1>
+        <p className="text-sm text-gray-400">Proxima función: busqueda de usuarios.</p>
         <UserList users={users} onEdit={handleEdit} onDelete={handleDelete} />
       </main>
     </div>

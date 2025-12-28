@@ -7,32 +7,39 @@ export const UserList = ({ users, onEdit, onDelete }) => {
       </p>
     );
   }
+
+  //Ejercicio: convertir la lista en una tabla
   return (
-    <ul>
-      {users.map((user) => (
-        <li
-          key={user.id}
-          className="flex justify-between items-center border p-3 mb-2"
-        >
-          <span>
-            {user.name} - {user.email}
-          </span>
-          <div className="flex gap-2">
-            <button
-              onClick={() => onEdit(user)}
-              className="text-blue-400 hover:text-blue-500 cursor-pointer"
-            >
-              Edit <i className="bi bi-pencil-square"></i>
-            </button>
-            <button
-              onClick={() => onDelete(user.id)}
-              className="text-red-400 hover:text-red-500 cursor-pointer"
-            >
-              Delete <i className="bi bi-trash"></i>
-            </button>
-          </div>
-        </li>
-      ))}
-    </ul>
+    <table className="w-full">
+      <thead>
+        <tr className="bg-slate-700">
+          <th className="border border-slate-700 p-2 font-medium">Name</th>
+          <th className="border border-slate-700 p-2 font-medium">Email</th>
+          <th className="border border-slate-700 p-2 font-medium">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {users.map((user) => (
+          <tr key={user.id}>
+            <td className="border border-slate-700 p-2">{user.name}</td>
+            <td className="border border-slate-700 p-2">{user.email}</td>
+            <td className="border border-slate-700 p-2">
+              <button
+                onClick={() => onEdit(user)}
+                className="text-blue-400 hover:text-blue-500 cursor-pointer mr-2"
+              >
+                <i className="bi bi-pencil-square text-lg"></i>
+              </button>
+              <button
+                onClick={() => onDelete(user.id)}
+                className="text-red-400 hover:text-red-500 cursor-pointer"
+              >
+                <i className="bi bi-trash text-lg"></i>
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 };
