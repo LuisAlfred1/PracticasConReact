@@ -1,10 +1,9 @@
-
 //Componente de lista de usuarios, recibe props para manejar la edición y eliminación de usuarios
 export const UserList = ({ users, onEdit, onDelete }) => {
   if (users.length === 0) {
     return (
       <p>
-        There are no registered users <i className="bi bi-book"></i>
+        No users found <i className="bi bi-slash-circle"></i>
       </p>
     );
   }

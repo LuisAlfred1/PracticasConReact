@@ -12,12 +12,23 @@ export const CrudMain = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState(null);
-  const [success, setSuccess] = useState(false);
+  //Modificamos el nombre del estado success a successMessage para mayor claridad/semantica
+  const [successMessage, setSuccessMessage] = useState(null);
   const [editUserId, setEditUserId] = useState(null);
   //Estado para manejar la visibilidad del modal.
   const [showModal, setShowModal] = useState(false);
   //Estado para almacenar el usuario que se desea eliminar.
   const [userToDelete, setUserToDelete] = useState(null);
+  //Estado de búsqueda
+  const [search, setSearch] = useState("");
+
+  //Aqui filtramos los usuarios según el término de búsqueda, buscando en nombre y correo electrónico
+  const filteredUsers = users.filter((user) => {
+    return (
+      user.name.toLowerCase().includes(search.toLowerCase()) ||
+      user.email.toLowerCase().includes(search.toLowerCase())
+    );
+  });
 
   //Manejo del submit del formulario
   const handleSubmit = (e) => {
@@ -36,12 +47,12 @@ export const CrudMain = () => {
         )
       );
       setEditUserId(null);
-      setSuccess("User updated successfully!");
+      setSuccessMessage("User updated successfully!");
 
       //⬇️ Si no existe editUserId, estamos agregando un nuevo usuario
     } else {
       setUsers((prev) => [...prev, { id: Date.now(), name, email }]);
-      setSuccess("User added successfully!");
+      setSuccessMessage("User added successfully!");
     }
 
     setName("");
@@ -73,14 +84,14 @@ export const CrudMain = () => {
 
   //Aqui utilizamos useEffect para limpiar los mensajes de exito y error despues de 3 segundos, por qué useEffect? Porque queremos que este efecto secundario ocurra en respuesta a cambios en los estados de success y errors.
   useEffect(() => {
-    if (success || errors) {
+    if (successMessage || errors) {
       const timer = setTimeout(() => {
-        setSuccess(false);
+        setSuccessMessage(null);
         setErrors(null);
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [success, errors]);
+  }, [successMessage, errors]);
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -95,26 +106,37 @@ export const CrudMain = () => {
           editUserId={editUserId}
         />
       </aside>
-      {errors && (
-        <section className="fixed top-4 left-42 p-3 text-sm text-red-300 rounded-xl">
-          {errors}
-        </section>
-      )}
-      {success && (
-        <section className="fixed top-4 right-4 p-3 text-sm text-green-400 bg-green-950 rounded-xl shadow-lg">
-          {success}
-        </section>
-      )}
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-3">
+        {errors && (
+          <section className="p-4 text-sm text-red-300 bg-red-950 rounded-xl shadow-lg min-w-62.5 border border-red-700">
+            {errors}
+          </section>
+        )}
+
+        {successMessage && (
+          <section className="p-4 text-sm text-green-400 bg-green-950 rounded-xl shadow-lg min-w-62.5 border border-green-700">
+            {successMessage}
+          </section>
+        )}
+      </div>
       {/*Lado derecho */}
       <main className="p-6 flex-1">
-        <h1 className="text-2xl mb-4 font-medium">
-          <i className="bi bi-people-fill"></i> User CRUD
-        </h1>
-        <p className="text-sm text-gray-400">
-          Proxima función: busqueda de usuarios.
-        </p>
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-medium">
+            <i className="bi bi-people-fill"></i> User CRUD
+          </h1>
+          <input
+            type="text"
+            placeholder="Search user..."
+            value={search}
+            className="px-3 w-1/3 outline-none border-2 py-2 border-slate-400 rounded-md"
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <br />
         <UserList
-          users={users}
+          //Le pasamos la lista filtrada de usuarios al componente UserList
+          users={filteredUsers}
           onEdit={handleEdit}
           onDelete={OpenDeleteModal}
         />
