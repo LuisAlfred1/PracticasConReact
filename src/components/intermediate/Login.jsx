@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
@@ -33,7 +33,8 @@ export const Login = () => {
     }
 
     // 4. Login falso
-    if (email === "admin@email.com" && password === "laptop55*") {
+    //@email -> @gmail.com -- Arreglo semantico
+    if (email === "admin@gmail.com" && password === "laptop55*") {
       setSuccess(true);
       setEmail("");
       setPassword("");
@@ -44,10 +45,30 @@ export const Login = () => {
     setError("Credenciales incorrectas");
   };
 
+  //UseEffect para limpiar mensajes de error y éxito después de 3 segundos
+  useEffect(() => {
+    if (error || success) {
+      //Crear un temporizador para limpiar los mensajes
+      const timer = setTimeout(() => {
+        //limipar los mensajes
+        setError("");
+        setSuccess(false);
+        //Despues de 3 segundos
+      }, 3000);
+
+      //Retorna una función de limpieza para evitar fugas de memoria
+      return () => clearTimeout(timer);
+    }
+    //El useEffect se ejecuta cada vez que cambian los estados de error o success (dependencias)
+  }, [error, success]);
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-[url('./edific.png')] bg-cover relative">
       <div className="absolute inset-0 bg-black/70 z-0"></div>
-      <form onSubmit={handleSubmit} className="max-w-sm p-4 w-full relative z-10">
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-sm p-4 w-full relative z-10"
+      >
         <h1 className="text-3xl font-bold text-center">
           Log in to your account
         </h1>
@@ -71,7 +92,7 @@ export const Login = () => {
             <input
               type={showPassword ? "text" : "password"}
               value={password}
-              placeholder="example@gmail.com"
+              placeholder="Please enter your password"
               className="mt-1 w-full outline-none border-2 px-2 py-2 border-gray-500 bg-white/10 backdrop-blur-md"
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -89,14 +110,14 @@ export const Login = () => {
           </div>
         </div>
         {error && (
-          <section className=" fixed top-4 right-4 text-sm text-red-400 max-w-sm p-3 rounded-xl  bg-red-950 shadow-lg">
+          <section className=" fixed top-4 right-4 text-sm text-red-400 max-w-sm p-3 rounded-xl  bg-red-950 shadow-lg border border-red-700">
             {error} ❌
           </section>
         )}
 
         {success && (
-          <section className=" fixed top-4 right-4 text-sm text-green-400 font-bold max-w-sm p-3 rounded-xl  bg-green-900 shadow-lg">
-            Acceso concedido ✅
+          <section className=" fixed top-4 right-4 text-sm text-green-400 max-w-sm p-3 rounded-xl  bg-green-900 shadow-lg border border-green-700">
+            Acceso concedido <i className="bi bi-check-circle-fill"></i>
           </section>
         )}
         <div className="m-2 flex justify-between items-center">
